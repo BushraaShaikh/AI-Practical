@@ -574,34 +574,6 @@ if __name__ == "__main__":
     print("Predicted Sentiment:", sentiment_analyzer.predict(test_review))
 
 OUTPUT:
-PS D:\AI Practical Exam>  & 'c:\Python312\python.exe' 'c:\Users\LENOVO\.vscode\extensions\ms-python.debugpy-2024.12.0-win32-x64\bundled\libs\debugpy\adapter/../..\debugpy\launcher' '25271' '--' 'd:\AI Practical Exam\4reallifeapplicationinaIlibrariespython.py' 
-d:\AI Practical Exam\4reallifeapplicationinaIlibrariespython.py:3: DeprecationWarning: 
-Pyarrow will become a required dependency of pandas in the next major release of pandas (pandas 3.0),
-(to allow more performant data types, such as the Arrow string type, and better interoperability with other libraries)
-but was not found to be installed on your system.
-If this would cause problems for you,
-please provide us feedback at https://github.com/pandas-dev/pandas/issues/54466
-        
-  import pandas as pd
-[nltk_data] Downloading package punkt to
-[nltk_data]     C:\Users\LENOVO\AppData\Roaming\nltk_data...
-[nltk_data]   Package punkt is already up-to-date!
-[nltk_data] Downloading package stopwords to
-[nltk_data]     C:\Users\LENOVO\AppData\Roaming\nltk_data...
-[nltk_data]   Package stopwords is already up-to-date!
-Accuracy: 0.0
-c:\Python312\Lib\site-packages\sklearn\metrics\_classification.py:1509: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
-  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
-c:\Python312\Lib\site-packages\sklearn\metrics\_classification.py:1509: UndefinedMetricWarning: Recall is ill-defined and being set to 0.0 in labels with no true samples. Use `zero_division` parameter to control this behavior.
-  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
-c:\Python312\Lib\site-packages\sklearn\metrics\_classification.py:1509: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
-  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
-c:\Python312\Lib\site-packages\sklearn\metrics\_classification.py:1509: UndefinedMetricWarning: Recall is ill-defined and being set to 0.0 in labels with no true samples. Use `zero_division` parameter to control this behavior.
-  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
-c:\Python312\Lib\site-packages\sklearn\metrics\_classification.py:1509: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
-  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
-c:\Python312\Lib\site-packages\sklearn\metrics\_classification.py:1509: UndefinedMetricWarning: Recall is ill-defined and being set to 0.0 in labels with no true samples. Use `zero_division` parameter to control this behavior.
-  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
 Classification Report:
                precision    recall  f1-score   support
 
@@ -741,7 +713,6 @@ if __name__ == "__main__":
 
 
 output:
-PS D:\AI Practical Exam>  d:; cd 'd:\AI Practical Exam'; & 'c:\Python312\python.exe' 'c:\Users\LENOVO\.vscode\extensions\ms-python.debugpy-2024.12.0-win32-x64\bundled\libs\debugpy\adapter/../..\debugpy\launcher' '25555' '--' 'd:\AI Practical Exam\5expertsysteminpython.py'
 Welcome to the Health Expert System!
 Please enter your symptoms separated by commas.
 Symptoms: sneezing, runny nose, itchy eyes, congestion
