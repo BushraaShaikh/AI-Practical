@@ -1,0 +1,278 @@
+#AI 
+from collections import deque
+
+# Function to perform BFS
+def bfs(graph, start):
+    visited = set()  # Set to track visited nodes
+    queue = deque([start])  # Queue to explore nodes level by level
+    visited.add(start)
+
+    while queue:
+        node = queue.popleft()  # Get the first node in the queue
+        print(node, end=" ")
+
+        # Add all unvisited neighbors to the queue
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+
+# Example graph (adjacency list)
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+# Starting BFS from node 'A'
+bfs(graph, 'A')
+
+import heapq
+
+# A* Algorithm
+def a_star(start, goal, h_func, neighbors_func):
+    # The priority queue to explore nodes with minimum f = g + h
+    open_list = []
+    heapq.heappush(open_list, (0 + h_func(start), 0, start))  # (f, g, node)
+    
+    came_from = {}  # To track the best path to each node
+    g_score = {start: 0}  # Distance from start to each node
+    f_score = {start: h_func(start)}  # Estimated distance from start to goal
+
+    while open_list:
+        _, g, current = heapq.heappop(open_list)  # Get the node with the lowest f score
+        
+        if current == goal:  # Reached the goal
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            return path[::-1]  # Reverse the path to get the correct order
+        
+        for neighbor in neighbors_func(current):  # Explore neighbors
+            tentative_g_score = g + 1  # All neighbors have a cost of 1
+            
+            if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g_score
+                f_score[neighbor] = g_score[neighbor] + h_func(neighbor)
+                heapq.heappush(open_list, (f_score[neighbor], tentative_g_score, neighbor))
+    
+    return None  # No path found
+
+
+# Example grid and helper functions
+
+def heuristic(node):
+    # Simple Manhattan distance heuristic
+    return abs(node[0] - goal[0]) + abs(node[1] - goal[1])
+
+def neighbors(node):
+    # List possible neighbors (up, down, left, right)
+    x, y = node
+    return [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
+
+# Example grid environment
+start = (0, 0)  # Starting point
+goal = (3, 3)  # Goal point
+
+# Run A* algorithm
+path = a_star(start, goal, heuristic, neighbors)
+print("Path:", path)
+# Minimax Algorithm for Tic-Tac-Toe
+
+# Utility functions
+def is_winner(board, player):
+    # Check rows, columns, and diagonals for a win
+    for row in board:
+        if all(s == player for s in row):
+            return True
+    for col in zip(*board):
+        if all(s == player for s in col):
+            return True
+    if all(board[i][i] == player for i in range(3)):
+        return True
+    if all(board[i][2-i] == player for i in range(3)):
+        return True
+    return False
+
+def is_draw(board):
+    return all(cell != ' ' for row in board for cell in row)
+
+def minimax(board, depth, is_maximizing, alpha, beta):
+    if is_winner(board, 'X'):
+        return 1
+    if is_winner(board, 'O'):
+        return -1
+    if is_draw(board):
+        return 0
+
+    if is_maximizing:
+        max_eval = -float('inf')
+        for i in range(3):
+            for j in range(3):
+                if board[i][j] == ' ':
+                    board[i][j] = 'X'
+                    eval = minimax(board, depth + 1, False, alpha, beta)
+                    board[i][j] = ' '
+                    max_eval = max(max_eval, eval)
+                    alpha = max(alpha, eval)
+                    if beta <= alpha:
+                        break
+        return max_eval
+    else:
+        min_eval = float('inf')
+        for i in range(3):
+            for j in range(3):
+                if board[i][j] == ' ':
+                    board[i][j] = 'O'
+                    eval = minimax(board, depth + 1, True, alpha, beta)
+                    board[i][j] = ' '
+                    min_eval = min(min_eval, eval)
+                    beta = min(beta, eval)
+                    if beta <= alpha:
+                        break
+        return min_eval
+
+def best_move(board):
+    best_val = -float('inf')
+    move = (-1, -1)
+    for i in range(3):
+        for j in range(3):
+            if board[i][j] == ' ':
+                board[i][j] = 'X'
+                move_val = minimax(board, 0, False, -float('inf'), float('inf'))
+                board[i][j] = ' '
+                if move_val > best_val:
+                    best_val = move_val
+                    move = (i, j)
+    return move
+
+def print_board(board):
+    for row in board:
+        print(" | ".join(row))
+        print("-" * 5)
+
+# Main Game loop
+def play_game():
+    board = [[' ' for _ in range(3)] for _ in range(3)]
+    print("Welcome to Tic-Tac-Toe!")
+    print_board(board)
+
+    while True:
+        # Player O (Human)
+        print("\nPlayer O's turn")
+        row, col = map(int, input("Enter row and column (0-2) for O: ").split())
+        if board[row][col] != ' ':
+            print("Cell is already taken, try again!")
+            continue
+        board[row][col] = 'O'
+        print_board(board)
+        if is_winner(board, 'O'):
+            print("Player O wins!")
+            break
+        if is_draw(board):
+            print("It's a draw!")
+            break
+
+        # Player X (AI)
+        print("\nPlayer X's (AI) turn")
+        row, col = best_move(board)
+        board[row][col] = 'X'
+        print_board(board)
+        if is_winner(board, 'X'):
+            print("Player X (AI) wins!")
+            break
+        if is_draw(board):
+            print("It's a draw!")
+            break
+
+# Run the game
+play_game()
+import numpy as np
+
+# Perceptron Learning Algorithm
+def perceptron(X, y, learning_rate=0.1, epochs=10):
+    # Initialize weights and bias
+    weights = np.zeros(X.shape[1])  # One weight for each feature
+    bias = 0
+
+    # Training loop
+    for epoch in range(epochs):
+        for i in range(len(X)):
+            # Calculate the output using the current weights and bias
+            linear_output = np.dot(X[i], weights) + bias
+            prediction = 1 if linear_output >= 0 else -1  # Activation function
+
+            # Update weights and bias if there's an error
+            if prediction != y[i]:
+                weights += learning_rate * y[i] * X[i]
+                bias += learning_rate * y[i]
+
+    return weights, bias
+
+# Example usage with a simple dataset
+X = np.array([[2, 3], [4, 3], [1, 1], [3, 4]])  # Features
+y = np.array([1, 1, -1, -1])  # Labels
+
+weights, bias = perceptron(X, y)
+
+print("Trained weights:", weights)
+print("Trained bias:", bias)
+import numpy as np
+import skfuzzy as fuzz
+
+# Define fuzzy sets for 'Aspect Ratio' and 'Area'
+x_aspect = np.linspace(0, 2, 100)  # Aspect Ratio: [0, 2]
+x_area = np.linspace(0, 1000, 100)  # Area: [0, 1000]
+
+# Fuzzy membership functions for Aspect Ratio
+aspect_small = fuzz.trimf(x_aspect, [0, 0, 1])
+aspect_medium = fuzz.trimf(x_aspect, [0, 1, 2])
+aspect_large = fuzz.trimf(x_aspect, [1, 2, 2])
+
+# Fuzzy membership functions for Area
+area_small = fuzz.trimf(x_area, [0, 0, 500])
+area_medium = fuzz.trimf(x_area, [0, 500, 1000])
+area_large = fuzz.trimf(x_area, [500, 1000, 1000])
+
+# Define example input values (aspect ratio, area)
+input_aspect = 1.2  # Example: aspect ratio of the character
+input_area = 350  # Example: area of the character
+
+# Calculate membership degrees
+aspect_deg_small = fuzz.interp_membership(x_aspect, aspect_small, input_aspect)
+aspect_deg_medium = fuzz.interp_membership(x_aspect, aspect_medium, input_aspect)
+aspect_deg_large = fuzz.interp_membership(x_aspect, aspect_large, input_aspect)
+
+area_deg_small = fuzz.interp_membership(x_area, area_small, input_area)
+area_deg_medium = fuzz.interp_membership(x_area, area_medium, input_area)
+area_deg_large = fuzz.interp_membership(x_area, area_large, input_area)
+
+# Output results
+print(f"Aspect Ratio Small: {aspect_deg_small:.2f}, Medium: {aspect_deg_medium:.2f}, Large: {aspect_deg_large:.2f}")
+print(f"Area Small: {area_deg_small:.2f}, Medium: {area_deg_medium:.2f}, Large: {area_deg_large:.2f}")
+import cv2
+import numpy as np
+
+# Load an image
+image = cv2.imread('input_image.jpg')
+
+# Convert to grayscale
+gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+# Apply Canny edge detection
+edges = cv2.Canny(gray_image, 100, 200)
+
+# Display the original and processed images
+cv2.imshow('Original Image', image)
+cv2.imshow('Edge Detected Image', edges)
+
+# Wait for key press and close windows
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
